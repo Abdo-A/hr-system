@@ -6,10 +6,14 @@ const AttendenceSchema = new mongoose.Schema({
     default: Date.now
   },
   workingHours: {
-    type: String
+    type: Number
   },
   status: {
     type: String
+  },
+  employee: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Employee"
   }
 });
 

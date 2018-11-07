@@ -2,18 +2,18 @@ const Employee = require("../../models/Employee");
 
 const router = require("express").Router();
 
-//@route GET api/employees/getEmployees
+//@route GET api/employees/getEmployees (body:none)
 //@desc Get All Employees
 //@access User
 router.get("/getEmployees", (req, res) => {
   Employee.find()
-    .populate("Attendence")
+    .populate("attendenceRecord")
     //.sort({ hireDate: -1 })
     .then(employees => res.json(employees))
     .catch(err => console.log("error getting employees", err));
 });
 
-//@route POST api/employees/addEmployee
+//@route POST api/employees/addEmployee (body: employee object)
 //@desc Add an Employee
 //@access public
 router.post("/addEmployee", (req, res) => {
@@ -29,7 +29,7 @@ router.post("/addEmployee", (req, res) => {
     .catch(err => res.status(404).json({ error: err }));
 });
 
-//@route DELETE api/employees/deleteEmployee/:id
+//@route DELETE api/employees/deleteEmployee/:id (body:none)
 //@desc Delete an Employee
 //@access public
 router.delete("/deleteEmployee/:id", (req, res) => {
@@ -38,7 +38,7 @@ router.delete("/deleteEmployee/:id", (req, res) => {
     .catch(err => res.status(404).json({ error: err }));
 });
 
-//@route PUT api/employees/updateEmployee/:id
+//@route PUT api/employees/updateEmployee/:id (body: {object of changes})
 //@desc Update an Employee
 //@access public
 router.put("/updateEmployee/:id", (req, res) => {
@@ -50,6 +50,21 @@ router.put("/updateEmployee/:id", (req, res) => {
       if (err) return res.status(500).json({ error: err });
       return res.json(employee);
     }
+  );
+});
+
+//@route POST api/employees/addAttendence/:id (body:attendence object)
+//@desc Add an attendence to an employee
+//@access public
+router.post("/addAttendence/:id", (req, res) => {
+  Employee.findById(req.params.id).then(employee =>
+    employee
+      .addAttendence(employee, {
+        workingHours: req.body.workingHours,
+        status: req.body.status,
+        employee: req.params.id
+      })
+      .then(() => res.json({ success: true }))
   );
 });
 
