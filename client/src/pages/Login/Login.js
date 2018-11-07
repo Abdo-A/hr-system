@@ -22,6 +22,9 @@ class Login extends Component {
 
   componentDidMount() {
     this.props.getUsers();
+    if (this.props.isAuthenticated) {
+      this.props.history.push("/dashboard");
+    }
   }
 
   showModal = () => {
@@ -166,7 +169,8 @@ class Login extends Component {
 const mapStateToProps = state => {
   return {
     users: state.db.users,
-    loading: state.db.loading
+    loading: state.db.loading,
+    isAuthenticated: state.db.isAuthenticated
   };
 };
 

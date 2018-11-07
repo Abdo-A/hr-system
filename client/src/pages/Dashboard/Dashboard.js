@@ -52,6 +52,11 @@ class Dashboard extends Component {
     });
   };
 
+  onSignOut = () => {
+    this.props.unauthenticate();
+    this.props.history.push("/");
+  };
+
   render() {
     if (this.props.loading) {
       return (
@@ -137,6 +142,8 @@ class Dashboard extends Component {
               <Spin size="large" />
             </div>
           )}
+
+          <Button onClick={this.onSignOut}>Sign Out</Button>
         </div>
       </div>
     );
@@ -156,6 +163,7 @@ export default connect(
     getEmployees: dbActions.getEmployees,
     addEmployee: dbActions.addEmployee,
     deleteEmployee: dbActions.deleteEmployee,
-    editEmployee: dbActions.editEmployee
+    editEmployee: dbActions.editEmployee,
+    unauthenticate: dbActions.unauthenticate
   }
 )(Dashboard);
