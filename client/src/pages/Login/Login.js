@@ -1,10 +1,9 @@
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
-import { Modal, Button } from "antd";
+import { Modal, Button, Input } from "antd";
 import React, { Component } from "react";
+import validator from "validator";
 
 import * as dbActions from "../../store/actions/dbActions";
-import Dashboard from "../Dashboard/Dashboard";
 
 import "./Login.css";
 
@@ -17,7 +16,9 @@ class Login extends Component {
     user_email: "",
     user_password: "",
     login_user_email: "",
-    login_user_password: ""
+    login_user_password: "",
+    modalSubmitError: "",
+    loginError: ""
   };
 
   componentDidMount() {
@@ -34,6 +35,21 @@ class Login extends Component {
   };
 
   handleOk = e => {
+    if (
+      this.state.user_name.length <= 2 ||
+      this.state.user_password.length <= 2 ||
+      !validator.isEmail(this.state.user_email)
+    ) {
+      this.setState(() => ({
+        modalSubmitError: "Please fill the inputs properly"
+      }));
+      return;
+    }
+
+    this.setState(() => ({
+      modalSubmitError: ""
+    }));
+
     this.props.addUser({
       name: this.state.user_name,
       email: this.state.user_email,
@@ -62,8 +78,21 @@ class Login extends Component {
   };
 
   onLogin = () => {
+    // if (
+    //   this.state.login_user_password.length <= 2 ||
+    //   !validator.isEmail(this.state.login_user_email)
+    // ) {
+    //   this.setState(() => ({
+    //     loginError: "Please fill the inputs properly"
+    //   }));
+    //   return;
+    // }
+
+    // this.setState(() => ({
+    //   loginError: ""
+    // }));
+
     // let authenticate = false;
-    // console.log(this.state.login_user_email, this.state.login_user_password);
     // for (let user of this.props.users) {
     //   if (
     //     this.state.login_user_email === user.email &&
@@ -72,7 +101,13 @@ class Login extends Component {
     //     authenticate = true;
     //     this.props.authenticate();
     //     this.props.history.replace("/dashboard");
+    //     return;
     //   }
+    // }
+    // if (!authenticate) {
+    //   this.setState(() => ({
+    //     loginError: "Email or password are incorrect"
+    //   }));
     // }
     this.props.authenticate();
     this.props.history.replace("/dashboard");
@@ -82,28 +117,30 @@ class Login extends Component {
     return (
       <div className="login-container">
         <h1 style={{ color: "#FFF" }}>Welcome to our HR system</h1>
-        <a href="http://eseed.net" target="_blank">
+        <a href="http://eseed.net" target="_blank" rel="noopener noreferrer">
           <img src={logo} alt="company" className="login-logo" width="200" />
         </a>
 
         {/* SIGN IN */}
 
         <div style={{ margin: "20px" }}>
-          <input
-            type="email"
+          <Input
+            placeholder="Email"
             name="login_user_email"
+            type="email"
             onChange={this.onInputChange}
             value={this.state.login_user_email}
-            style={{ color: "#888" }}
+            style={{ width: "30vw" }}
           />
           <br />
           <br />
-          <input
-            type="password"
+          <Input
+            placeholder="Password"
             name="login_user_password"
+            type="password"
             onChange={this.onInputChange}
             value={this.state.login_user_password}
-            style={{ color: "#888" }}
+            style={{ width: "30vw" }}
           />
         </div>
 
@@ -116,11 +153,13 @@ class Login extends Component {
           >
             Login
           </Button>
+          <br />
+          <b>{this.state.loginError}</b>
         </div>
 
         {/* SIGN UP */}
 
-        <Button type="primary" onClick={this.showModal}>
+        <Button type="danger" onClick={this.showModal}>
           New HR Member?
         </Button>
         <Modal
@@ -128,6 +167,7 @@ class Login extends Component {
           visible={this.state.showModal}
           closable={false}
           footer={[
+            <b>{this.state.modalSubmitError} </b>,
             <Button key="back" onClick={this.handleCancel}>
               Cancel
             </Button>,
@@ -137,29 +177,32 @@ class Login extends Component {
           ]}
         >
           <label>Name</label>{" "}
-          <input
+          <Input
             type="text"
             name="user_name"
             value={this.state.user_name}
             onChange={this.onInputChange}
+            placeholder="Name"
           />
           <br />
           <br />
           <label>Email</label>{" "}
-          <input
+          <Input
             type="email"
             name="user_email"
             value={this.state.user_email}
             onChange={this.onInputChange}
+            placeholder="Email"
           />
           <br />
           <br />
           <label>Password</label>{" "}
-          <input
+          <Input
             type="password"
             name="user_password"
             value={this.state.user_password}
             onChange={this.onInputChange}
+            placeholder="password"
           />
           <br />
         </Modal>

@@ -1,8 +1,9 @@
+body {
+  background-image: linear-gradient(#62c9e6, #017da0);
+}
 .App {
   text-align: center;
-  background-color: #017da0;
   height: 100vh;
-  background-image: linear-gradient(#62c9e6, #017da0);
 }
 
 .spin {

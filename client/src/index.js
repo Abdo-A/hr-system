@@ -1,10 +1,10 @@
+import { Provider } from "react-redux";
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "./App";
+
 import * as serviceWorker from "./serviceWorker";
-import { BrowserRouter } from "react-router-dom";
+import App from "./App";
 import store from "./store/createStore";
-import { Provider } from "react-redux";
 
 ReactDOM.render(
   <Provider store={store}>

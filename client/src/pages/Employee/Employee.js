@@ -1,4 +1,5 @@
 import { connect } from "react-redux";
+import validator from "validator";
 
 import {
   Modal,
@@ -28,7 +29,8 @@ class Employee extends Component {
     employee_hire_date: "",
     attendence_working_hours: 8,
     attendence_day: "",
-    attendence_status: ""
+    attendence_status: "",
+    modalSubmitError: ""
   };
 
   componentDidMount() {
@@ -53,6 +55,21 @@ class Employee extends Component {
     if (!employer_hire_date) {
       employer_hire_date = moment().format("L");
     }
+
+    if (
+      this.state.employee_name.length <= 2 ||
+      this.state.employee_mobile.length <= 2 ||
+      !validator.isEmail(this.state.employee_email)
+    ) {
+      this.setState(() => ({
+        modalSubmitError: "Please fill the inputs properly"
+      }));
+      return;
+    }
+
+    this.setState(() => ({
+      modalSubmitError: ""
+    }));
 
     this.props.editEmployee(this.props.employee._id, {
       name: this.state.employee_name,
@@ -110,6 +127,13 @@ class Employee extends Component {
     });
   };
 
+  onMobileInputChange = e => {
+    if (!isNaN(e.target.value))
+      this.setState({
+        employee_mobile: e.target.value
+      });
+  };
+
   onDateInputChange = e => {
     this.setState({
       employee_hire_date: e.format("L")
@@ -152,7 +176,13 @@ class Employee extends Component {
     return (
       <div style={{ paddingTop: "50px" }}>
         <div>
-          <h1>{this.props.employee.name}</h1>
+          <h1>
+            <b>
+              {this.props.employee.name.charAt(0).toUpperCase() +
+                this.props.employee.name.slice(1)}
+            </b>
+          </h1>
+
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
             <Button onClick={this.onSignOut}>Sign Out</Button>
           </div>
@@ -191,6 +221,7 @@ class Employee extends Component {
             visible={this.state.showModal}
             closable={false}
             footer={[
+              <b>{this.state.modalSubmitError} </b>,
               <Button key="back" onClick={this.handleCancel}>
                 Cancel
               </Button>,
@@ -222,7 +253,7 @@ class Employee extends Component {
               type="text"
               name="employee_mobile"
               value={this.state.employee_mobile}
-              onChange={this.onInputChange}
+              onChange={this.onMobileInputChange}
             />
             <br />
             <br />
