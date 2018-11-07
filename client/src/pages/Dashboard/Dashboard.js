@@ -1,7 +1,8 @@
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { Modal, Button } from "antd";
-import { Spin } from "antd";
+import { Spin, DatePicker } from "antd";
+import moment from "moment";
 import React, { Component } from "react";
 
 import * as dbActions from "../../store/actions/dbActions";
@@ -28,11 +29,16 @@ class Dashboard extends Component {
   };
 
   handleOk = e => {
+    let employer_hire_date = this.state.employee_hire_date;
+    if (!employer_hire_date) {
+      employer_hire_date = moment().format("L");
+    }
+
     this.props.addEmployee({
       name: this.state.employee_name,
       email: this.state.employee_email,
       mobile: this.state.employee_mobile,
-      hireDate: this.state.employee_hire_date
+      hireDate: employer_hire_date
     });
 
     this.setState({
@@ -50,6 +56,12 @@ class Dashboard extends Component {
     this.setState({
       [e.target.name]: e.target.value
     });
+  };
+
+  onDateInputChange = e => {
+    this.setState(() => ({
+      employee_hire_date: e.format("L")
+    }));
   };
 
   onSignOut = () => {
@@ -114,11 +126,10 @@ class Dashboard extends Component {
           <br />
           <br />
           <label>Hire Date</label>{" "}
-          <input
-            type="date"
-            name="employee_hire_date"
-            value={this.state.employee_hire_date}
-            onChange={this.onInputChange}
+          <DatePicker
+            defaultValue={moment()}
+            onChange={this.onDateInputChange}
+            allowClear={false}
           />
           <br />
         </Modal>
@@ -132,7 +143,7 @@ class Dashboard extends Component {
                     <p>{employee.name}</p>
                     <p>{employee.mobile}</p>
                     <p>{employee.email}</p>
-                    <p>{employee.hireDate}</p>
+                    <p>{moment(employee.hireDate).format("L")}</p>
                   </div>
                 </Link>
               );

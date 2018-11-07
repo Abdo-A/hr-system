@@ -31,6 +31,13 @@ const dbReducer = (state = INITIAL_STATE, action) => {
         loading: false
       };
 
+    case actionTypes.ADD_EMPLOYEE_ATTENDENCE:
+      return {
+        ...state,
+        loading: false,
+        currentEmployee: action.employee
+      };
+
     case actionTypes.EDIT_EMPLOYEE:
       return {
         ...state,

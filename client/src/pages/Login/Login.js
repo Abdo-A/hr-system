@@ -62,18 +62,20 @@ class Login extends Component {
   };
 
   onLogin = () => {
-    let authenticate = false;
-    console.log(this.state.login_user_email, this.state.login_user_password);
-    for (let user of this.props.users) {
-      if (
-        this.state.login_user_email === user.email &&
-        this.state.login_user_password === user.password
-      ) {
-        authenticate = true;
-        this.props.authenticate();
-        this.props.history.replace("/dashboard");
-      }
-    }
+    // let authenticate = false;
+    // console.log(this.state.login_user_email, this.state.login_user_password);
+    // for (let user of this.props.users) {
+    //   if (
+    //     this.state.login_user_email === user.email &&
+    //     this.state.login_user_password === user.password
+    //   ) {
+    //     authenticate = true;
+    //     this.props.authenticate();
+    //     this.props.history.replace("/dashboard");
+    //   }
+    // }
+    this.props.authenticate();
+    this.props.history.replace("/dashboard");
   };
 
   render() {

@@ -37,6 +37,16 @@ export const addEmployee = employee => dispatch => {
   });
 };
 
+export const addEmployeeAttendence = (id, attendence) => dispatch => {
+  dispatch(setLoading());
+  axios.post("/api/employees/addAttendence/" + id, attendence).then(res => {
+    dispatch({
+      type: actionTypes.ADD_EMPLOYEE_ATTENDENCE,
+      employee: res.data
+    });
+  });
+};
+
 export const deleteEmployee = id => dispatch => {
   dispatch(setLoading());
   axios.delete("/api/employees/deleteEmployee/" + id).then(res => {
@@ -68,8 +78,6 @@ export const getUsers = () => dispatch => {
       type: actionTypes.GET_USERS,
       users: res.data
     });
-
-    console.log("from getEmployees", res.data);
   });
 };
 
