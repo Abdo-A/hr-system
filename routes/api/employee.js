@@ -13,9 +13,19 @@ router.get("/getEmployees", (req, res) => {
     .catch(err => console.log("error getting employees", err));
 });
 
+//@route GET api/employees/getEmployee/:id (body:none)
+//@desc Get an Employee
+//@access User
+router.get("/getEmployee/:id", (req, res) => {
+  Employee.findById(req.params.id)
+    .populate("attendenceRecord")
+    .then(employee => res.json(employee))
+    .catch(err => console.log("error getting employee", err));
+});
+
 //@route POST api/employees/addEmployee (body: employee object)
 //@desc Add an Employee
-//@access public
+//@access User
 router.post("/addEmployee", (req, res) => {
   const newEmployee = new Employee({
     name: req.body.name,
@@ -51,6 +61,7 @@ router.put("/updateEmployee/:id", (req, res) => {
       return res.json(employee);
     }
   );
+  console.log(res.body);
 });
 
 //@route POST api/employees/addAttendence/:id (body:attendence object)

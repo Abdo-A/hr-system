@@ -1,7 +1,7 @@
+import { BrowserRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { Route, Switch, Redirect } from "react-router-dom";
 import React, { Component } from "react";
-import { BrowserRouter } from "react-router-dom";
 
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Employee from "./pages/Employee/Employee";
@@ -17,7 +17,7 @@ class App extends Component {
         <BrowserRouter>
           <Switch>
             <Route path="/" exact component={Login} />
-            {isAuthenticated ? (
+            {isAuthenticated !== false ? (
               <Switch>
                 <Route path="/dashboard" component={Dashboard} />
                 <Route path="/employee/:id" component={Employee} />
@@ -35,7 +35,7 @@ class App extends Component {
 
 const mapStateToProps = state => {
   return {
-    isAuthenticated: state.auth.isAuthenticated
+    isAuthenticated: state.db.isAuthenticated
   };
 };
 

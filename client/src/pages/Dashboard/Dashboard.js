@@ -1,45 +1,136 @@
-import React, { Component } from "react";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
+import { Modal, Button } from "antd";
+import { Spin } from "antd";
+import React, { Component } from "react";
+
 import * as dbActions from "../../store/actions/dbActions";
+
 import "./Dashboard.css";
 
 class Dashboard extends Component {
+  state = {
+    showModal: false,
+    employee_name: "",
+    employee_email: "",
+    employee_mobile: "",
+    employee_hire_date: ""
+  };
+
   componentDidMount() {
     this.props.getEmployees();
   }
 
-  onAddEmployee = () => {
-    this.props.addEmployee({
-      name: "gerges",
-      mobile: "012",
-      email: "gerges@dd.com"
+  showModal = () => {
+    this.setState({
+      showModal: true
     });
   };
 
-  onDeleteEmployee = () => {
-    this.props.deleteEmployee("5be2b70c2bc8510100cb485e");
+  handleOk = e => {
+    this.props.addEmployee({
+      name: this.state.employee_name,
+      email: this.state.employee_email,
+      mobile: this.state.employee_mobile,
+      hireDate: this.state.employee_hire_date
+    });
+
+    this.setState({
+      showModal: false
+    });
   };
 
-  onEditEmployee = () => {
-    this.props.editEmployee("5be2b96080e2811cbcb20fee", { mobile: "00000000" });
+  handleCancel = e => {
+    this.setState({
+      showModal: false
+    });
+  };
+
+  onInputChange = e => {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
   };
 
   render() {
+    if (this.props.loading) {
+      return (
+        <div className="spin">
+          <Spin size="large" />
+        </div>
+      );
+    }
+
     return (
       <div>
-        <h1>Dashboard</h1>{" "}
-        <button onClick={this.onAddEmployee}>Add employee</button>
-        <button onClick={this.onDeleteEmployee}>Delete employee</button>
-        <button onClick={this.onEditEmployee}>Edit employee</button>
+        <h1 className="dashboard-header">Dashboard</h1>
+        {/* Adding an employee */}
+        <Button type="primary" onClick={this.showModal}>
+          Add Employee
+        </Button>
+        <Modal
+          title="Basic Modal"
+          visible={this.state.showModal}
+          closable={false}
+          footer={[
+            <Button key="back" onClick={this.handleCancel}>
+              Cancel
+            </Button>,
+            <Button key="submit" type="primary" onClick={this.handleOk}>
+              Add
+            </Button>
+          ]}
+        >
+          <label>Name</label>{" "}
+          <input
+            type="text"
+            name="employee_name"
+            value={this.state.employee_name}
+            onChange={this.onInputChange}
+          />
+          <br />
+          <br />
+          <label>Email</label>{" "}
+          <input
+            type="text"
+            name="employee_email"
+            value={this.state.employee_email}
+            onChange={this.onInputChange}
+          />
+          <br />
+          <br />
+          <label>Mobile</label>{" "}
+          <input
+            type="text"
+            name="employee_mobile"
+            value={this.state.employee_mobile}
+            onChange={this.onInputChange}
+          />
+          <br />
+          <br />
+          <label>Hire Date</label>{" "}
+          <input
+            type="date"
+            name="employee_hire_date"
+            value={this.state.employee_hire_date}
+            onChange={this.onInputChange}
+          />
+          <br />
+        </Modal>
+
         <div>
-          {" "}
-          {this.props.employees.map(employee => (
-            <div className="dashboard-employee-container">
-              <p>{employee.name}</p>
-              <p>{employee.mobile}</p>
-              <p>{employee.email}</p>
-            </div>
-          ))}{" "}
+          {this.props.employees.map(employee => {
+            return (
+              <Link to={`/employee/${employee._id}`} key={employee._id}>
+                <div className="dashboard-employee-container">
+                  <p>{employee.name}</p>
+                  <p>{employee.mobile}</p>
+                  <p>{employee.email}</p>
+                  <p>{employee.hireDate}</p>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </div>
     );
@@ -48,7 +139,8 @@ class Dashboard extends Component {
 
 const mapStateToProps = state => {
   return {
-    employees: state.db.employees
+    employees: state.db.employees,
+    loading: state.db.loading
   };
 };
 
