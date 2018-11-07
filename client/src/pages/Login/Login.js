@@ -46,6 +46,15 @@ class Login extends Component {
       return;
     }
 
+    for (let user of this.props.users) {
+      if (this.state.user_email === user.email) {
+        this.setState(() => ({
+          modalSubmitError: "This email is already registered"
+        }));
+        return;
+      }
+    }
+
     this.setState(() => ({
       modalSubmitError: ""
     }));
@@ -56,13 +65,22 @@ class Login extends Component {
       password: this.state.user_password
     });
 
+    this.setState(() => ({
+      modalSubmitError: "Making an account.."
+    }));
+
+    setTimeout(() => {
+      this.setState({
+        showModal: false
+      });
+    }, 1500);
+
     setTimeout(() => {
       this.props.getUsers();
+      this.setState(() => ({
+        modalSubmitError: ""
+      }));
     }, 5000);
-
-    this.setState({
-      showModal: false
-    });
   };
 
   handleCancel = e => {
@@ -78,39 +96,37 @@ class Login extends Component {
   };
 
   onLogin = () => {
-    // if (
-    //   this.state.login_user_password.length <= 2 ||
-    //   !validator.isEmail(this.state.login_user_email)
-    // ) {
-    //   this.setState(() => ({
-    //     loginError: "Please fill the inputs properly"
-    //   }));
-    //   return;
-    // }
+    if (
+      this.state.login_user_password.length <= 2 ||
+      !validator.isEmail(this.state.login_user_email)
+    ) {
+      this.setState(() => ({
+        loginError: "Please fill the inputs properly"
+      }));
+      return;
+    }
 
-    // this.setState(() => ({
-    //   loginError: ""
-    // }));
+    this.setState(() => ({
+      loginError: ""
+    }));
 
-    // let authenticate = false;
-    // for (let user of this.props.users) {
-    //   if (
-    //     this.state.login_user_email === user.email &&
-    //     this.state.login_user_password === user.password
-    //   ) {
-    //     authenticate = true;
-    //     this.props.authenticate();
-    //     this.props.history.replace("/dashboard");
-    //     return;
-    //   }
-    // }
-    // if (!authenticate) {
-    //   this.setState(() => ({
-    //     loginError: "Email or password are incorrect"
-    //   }));
-    // }
-    this.props.authenticate();
-    this.props.history.replace("/dashboard");
+    let authenticate = false;
+    for (let user of this.props.users) {
+      if (
+        this.state.login_user_email === user.email &&
+        this.state.login_user_password === user.password
+      ) {
+        authenticate = true;
+        this.props.authenticate();
+        this.props.history.replace("/dashboard");
+        return;
+      }
+    }
+    if (!authenticate) {
+      this.setState(() => ({
+        loginError: "Email or password are incorrect"
+      }));
+    }
   };
 
   render() {

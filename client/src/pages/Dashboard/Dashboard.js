@@ -46,6 +46,15 @@ class Dashboard extends Component {
       return;
     }
 
+    for (let employee of this.props.employees) {
+      if (this.state.employee_email === employee.email) {
+        this.setState(() => ({
+          modalSubmitError: "There is an employee with the same email"
+        }));
+        return;
+      }
+    }
+
     this.setState(() => ({
       modalSubmitError: ""
     }));

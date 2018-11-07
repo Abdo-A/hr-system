@@ -6,6 +6,7 @@ import {
   Button,
   Card,
   Spin,
+  Input,
   InputNumber,
   Select,
   DatePicker
@@ -65,6 +66,15 @@ class Employee extends Component {
         modalSubmitError: "Please fill the inputs properly"
       }));
       return;
+    }
+
+    for (let employee of this.props.employees) {
+      if (this.state.employee_email === employee.email) {
+        this.setState(() => ({
+          modalSubmitError: "There is an employee with the same email"
+        }));
+        return;
+      }
     }
 
     this.setState(() => ({
@@ -231,29 +241,32 @@ class Employee extends Component {
             ]}
           >
             <label>Name</label>{" "}
-            <input
+            <Input
               type="text"
               name="employee_name"
               value={this.state.employee_name}
               onChange={this.onInputChange}
+              placeholder="Name"
             />
             <br />
             <br />
             <label>Email</label>{" "}
-            <input
+            <Input
               type="text"
               name="employee_email"
               value={this.state.employee_email}
               onChange={this.onInputChange}
+              placeholder="Email"
             />
             <br />
             <br />
             <label>Mobile</label>{" "}
-            <input
+            <Input
               type="text"
               name="employee_mobile"
               value={this.state.employee_mobile}
               onChange={this.onMobileInputChange}
+              placeholder="Mobile Number"
             />
             <br />
             <br />
@@ -352,7 +365,8 @@ class Employee extends Component {
 const mapStateToProps = state => {
   return {
     employee: state.db.currentEmployee,
-    loading: state.db.loading
+    loading: state.db.loading,
+    employees: state.db.employees
   };
 };
 
