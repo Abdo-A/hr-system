@@ -135,6 +135,11 @@ class Employee extends Component {
       });
   };
 
+  onSignOut = () => {
+    this.props.unauthenticate();
+    this.props.history.push("/");
+  };
+
   render() {
     if (this.props.loading || !this.props.employee) {
       return (
@@ -148,6 +153,20 @@ class Employee extends Component {
       <div style={{ paddingTop: "50px" }}>
         <div>
           <h1>{this.props.employee.name}</h1>
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <Button onClick={this.onSignOut}>Sign Out</Button>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              paddingTop: "5px"
+            }}
+          >
+            <Button onClick={() => this.props.history.push("/dashboard")}>
+              Dashboard
+            </Button>
+          </div>
           <h2>Employer email: {this.props.employee.email}</h2>
           <h2>Employer mobile: {this.props.employee.mobile}</h2>
           <h2>
@@ -312,6 +331,7 @@ export default connect(
     getEmployee: dbActions.getEmployee,
     addEmployeeAttendence: dbActions.addEmployeeAttendence,
     deleteEmployee: dbActions.deleteEmployee,
-    editEmployee: dbActions.editEmployee
+    editEmployee: dbActions.editEmployee,
+    unauthenticate: dbActions.unauthenticate
   }
 )(Employee);

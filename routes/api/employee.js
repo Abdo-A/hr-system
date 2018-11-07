@@ -41,7 +41,7 @@ router.post("/addEmployee", (req, res) => {
 
 //@route DELETE api/employees/deleteEmployee/:id (body:none)
 //@desc Delete an Employee
-//@access public
+//@access User
 router.delete("/deleteEmployee/:id", (req, res) => {
   Employee.findById(req.params.id)
     .then(employee => employee.remove().then(() => res.json({ success: true })))
@@ -50,7 +50,7 @@ router.delete("/deleteEmployee/:id", (req, res) => {
 
 //@route PUT api/employees/updateEmployee/:id (body: {object of changes})
 //@desc Update an Employee
-//@access public
+//@access User
 router.put("/updateEmployee/:id", (req, res) => {
   Employee.findByIdAndUpdate(
     req.params.id,
@@ -66,16 +66,17 @@ router.put("/updateEmployee/:id", (req, res) => {
 
 //@route POST api/employees/addAttendence/:id (body:attendence object)
 //@desc Add an attendence to an employee
-//@access public
+//@access User
 router.post("/addAttendence/:id", (req, res) => {
   Employee.findById(req.params.id).then(employee =>
     employee
       .addAttendence(employee, {
         workingHours: req.body.workingHours,
         status: req.body.status,
+        day: req.body.day,
         employee: req.params.id
       })
-      .then(() => res.json({ success: true }))
+      .then(() => res.json(employee))
   );
 });
 

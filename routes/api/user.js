@@ -28,7 +28,7 @@ router.post("/addUser", (req, res) => {
 
 //@route DELETE api/users/deleteUser/:id
 //@desc Delete a User
-//@access public
+//@access none
 router.delete("/deleteUser/:id", (req, res) => {
   User.findById(req.params.id)
     .then(user => user.remove().then(() => res.json({ success: true })))
@@ -37,7 +37,7 @@ router.delete("/deleteUser/:id", (req, res) => {
 
 //@route PUT api/users/updateUser/:id
 //@desc Update a User
-//@access public
+//@access none
 router.put("/updateUser/:id", (req, res) => {
   User.findByIdAndUpdate(
     req.params.id,

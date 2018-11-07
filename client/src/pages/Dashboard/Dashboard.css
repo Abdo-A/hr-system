@@ -11,3 +11,13 @@
   cursor: pointer;
   background-color: aqua;
 }
+
+.dashboard-employee-container-main {
+  display: flex;
+  justify-content: space-around;
+  border: 2px solid rgb(14, 255, 66);
+  margin: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: rgb(152, 209, 209);
+}

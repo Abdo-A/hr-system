@@ -81,6 +81,9 @@ class Dashboard extends Component {
     return (
       <div>
         <h1 className="dashboard-header">Dashboard</h1>
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <Button onClick={this.onSignOut}>Sign Out</Button>
+        </div>
         {/* Adding an employee */}
         <Button type="primary" onClick={this.showModal}>
           Add Employee
@@ -136,25 +139,44 @@ class Dashboard extends Component {
 
         <div>
           {this.props.employees ? (
-            this.props.employees.map(employee => {
-              return (
-                <Link to={`/employee/${employee._id}`} key={employee._id}>
-                  <div className="dashboard-employee-container">
-                    <p>{employee.name}</p>
-                    <p>{employee.mobile}</p>
-                    <p>{employee.email}</p>
-                    <p>{moment(employee.hireDate).format("L")}</p>
+            this.props.employees.map((employee, i) => {
+              if (i === 0) {
+                return (
+                  <div key={employee._id}>
+                    <div className="dashboard-employee-container-main">
+                      <p>Name</p>
+                      <p>Mobile Phone</p>
+                      <p>Email</p>
+                      <p>Hire Date</p>
+                    </div>
+
+                    <Link to={`/employee/${employee._id}`}>
+                      <div className="dashboard-employee-container">
+                        <p>{employee.name}</p>
+                        <p>{employee.mobile}</p>
+                        <p>{employee.email}</p>
+                        <p>{moment(employee.hireDate).format("L")}</p>
+                      </div>
+                    </Link>
                   </div>
-                </Link>
-              );
+                );
+              } else
+                return (
+                  <Link to={`/employee/${employee._id}`} key={employee._id}>
+                    <div className="dashboard-employee-container">
+                      <p>{employee.name}</p>
+                      <p>{employee.mobile}</p>
+                      <p>{employee.email}</p>
+                      <p>{moment(employee.hireDate).format("L")}</p>
+                    </div>
+                  </Link>
+                );
             })
           ) : (
             <div className="spin">
               <Spin size="large" />
             </div>
           )}
-
-          <Button onClick={this.onSignOut}>Sign Out</Button>
         </div>
       </div>
     );
