@@ -1,19 +1,28 @@
+import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { Modal, Button } from "antd";
 import React, { Component } from "react";
 
+import * as dbActions from "../../store/actions/dbActions";
 import Dashboard from "../Dashboard/Dashboard";
 
 import "./Login.css";
 
 const logo = require("../../assets/logo.jpg");
-export default class Login extends Component {
+
+class Login extends Component {
   state = {
     showModal: false,
     user_name: "",
     user_email: "",
-    user_password: ""
+    user_password: "",
+    login_user_email: "",
+    login_user_password: ""
   };
+
+  componentDidMount() {
+    this.props.getUsers();
+  }
 
   showModal = () => {
     this.setState({
@@ -22,12 +31,15 @@ export default class Login extends Component {
   };
 
   handleOk = e => {
-    this.props.addEmployee({
-      name: this.state.employee_name,
-      email: this.state.employee_email,
-      mobile: this.state.employee_mobile,
-      hireDate: this.state.employee_hire_date
+    this.props.addUser({
+      name: this.state.user_name,
+      email: this.state.user_email,
+      password: this.state.user_password
     });
+
+    setTimeout(() => {
+      this.props.getUsers();
+    }, 5000);
 
     this.setState({
       showModal: false
@@ -46,30 +58,63 @@ export default class Login extends Component {
     });
   };
 
+  onLogin = () => {
+    let authenticate = false;
+    console.log(this.state.login_user_email, this.state.login_user_password);
+    for (let user of this.props.users) {
+      if (
+        this.state.login_user_email === user.email &&
+        this.state.login_user_password === user.password
+      ) {
+        authenticate = true;
+        this.props.authenticate();
+        this.props.history.replace("/dashboard");
+      }
+    }
+  };
+
   render() {
     return (
       <div className="login-container">
         <h1 style={{ color: "#FFF" }}>Welcome to our HR system</h1>
-        <img src={logo} alt="company" className="login-logo" width="200" />
+        <a href="http://eseed.net" target="_blank">
+          <img src={logo} alt="company" className="login-logo" width="200" />
+        </a>
+
+        {/* SIGN IN */}
 
         <div style={{ margin: "20px" }}>
-          <input type="email" />
+          <input
+            type="email"
+            name="login_user_email"
+            onChange={this.onInputChange}
+            value={this.state.login_user_email}
+            style={{ color: "#888" }}
+          />
           <br />
           <br />
-          <input type="password" />
+          <input
+            type="password"
+            name="login_user_password"
+            onChange={this.onInputChange}
+            value={this.state.login_user_password}
+            style={{ color: "#888" }}
+          />
         </div>
 
         <div style={{ margin: "20px" }}>
-          <Link to="/dashboard">
-            <Button type="primary" block style={{ width: "200px" }}>
-              Login
-            </Button>
-          </Link>
+          <Button
+            type="primary"
+            block
+            style={{ width: "200px" }}
+            onClick={this.onLogin}
+          >
+            Login
+          </Button>
         </div>
 
         {/* SIGN UP */}
 
-        {/* Adding an employee */}
         <Button type="primary" onClick={this.showModal}>
           New HR Member?
         </Button>
@@ -117,3 +162,19 @@ export default class Login extends Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    users: state.db.users,
+    loading: state.db.loading
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  {
+    addUser: dbActions.addUser,
+    getUsers: dbActions.getUsers,
+    authenticate: dbActions.authenticate
+  }
+)(Login);

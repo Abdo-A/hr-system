@@ -152,7 +152,8 @@ class Employee extends Component {
 
 const mapStateToProps = state => {
   return {
-    employee: state.db.currentEmployee
+    employee: state.db.currentEmployee,
+    loading: state.db.loading
   };
 };
 

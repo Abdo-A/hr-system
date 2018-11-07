@@ -5,7 +5,7 @@ const INITIAL_STATE = {
   users: [],
   currentEmployee: null,
   loading: false,
-  isAuthenticated: true
+  isAuthenticated: false
 };
 
 const dbReducer = (state = INITIAL_STATE, action) => {
@@ -59,6 +59,18 @@ const dbReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         loading: false
+      };
+
+    case actionTypes.AUTHENTICATE:
+      return {
+        ...state,
+        isAuthenticated: true
+      };
+
+    case actionTypes.UNAUTHENTICATE:
+      return {
+        ...state,
+        isAuthenticated: false
       };
 
     default:

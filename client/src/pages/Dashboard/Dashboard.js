@@ -119,18 +119,24 @@ class Dashboard extends Component {
         </Modal>
 
         <div>
-          {this.props.employees.map(employee => {
-            return (
-              <Link to={`/employee/${employee._id}`} key={employee._id}>
-                <div className="dashboard-employee-container">
-                  <p>{employee.name}</p>
-                  <p>{employee.mobile}</p>
-                  <p>{employee.email}</p>
-                  <p>{employee.hireDate}</p>
-                </div>
-              </Link>
-            );
-          })}
+          {this.props.employees ? (
+            this.props.employees.map(employee => {
+              return (
+                <Link to={`/employee/${employee._id}`} key={employee._id}>
+                  <div className="dashboard-employee-container">
+                    <p>{employee.name}</p>
+                    <p>{employee.mobile}</p>
+                    <p>{employee.email}</p>
+                    <p>{employee.hireDate}</p>
+                  </div>
+                </Link>
+              );
+            })
+          ) : (
+            <div className="spin">
+              <Spin size="large" />
+            </div>
+          )}
         </div>
       </div>
     );

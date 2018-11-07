@@ -8,3 +8,6 @@ export const ADD_USER = "ADD_USER";
 export const GET_USERS = "GET_USERS";
 
 export const LOADING_START = "LOADING_START";
+
+export const AUTHENTICATE = "AUTHENTICATE";
+export const UNAUTHENTICATE = "UNAUTHENTICATE";

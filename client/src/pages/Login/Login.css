@@ -5,4 +5,6 @@
 
 .login-logo {
   margin-bottom: 70px;
+  border: 2px solid saddlebrown;
+  cursor: pointer;
 }

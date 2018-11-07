@@ -63,6 +63,7 @@ export const getUsers = () => dispatch => {
   dispatch(setLoading());
 
   axios.get("/api/users/getUsers").then(res => {
+    console.log("USERS", res.data);
     dispatch({
       type: actionTypes.GET_USERS,
       users: res.data
@@ -85,5 +86,17 @@ export const addUser = user => dispatch => {
 const setLoading = () => {
   return {
     type: actionTypes.LOADING_START
+  };
+};
+
+export const authenticate = () => {
+  return {
+    type: actionTypes.AUTHENTICATE
+  };
+};
+
+export const unauthenticate = () => {
+  return {
+    type: actionTypes.UNAUTHENTICATE
   };
 };
