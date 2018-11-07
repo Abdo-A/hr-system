@@ -1,13 +1,23 @@
 import { connect } from "react-redux";
-import { DatePicker } from "antd";
-import { Modal, Button, Card } from "antd";
-import { Spin } from "antd";
+
+import {
+  Modal,
+  Button,
+  Card,
+  Spin,
+  InputNumber,
+  Select,
+  DatePicker
+} from "antd";
+
 import moment from "moment";
 import React, { Component } from "react";
 
 import * as dbActions from "../../store/actions/dbActions";
 
 import "./Employee.css";
+
+const Option = Select.Option;
 
 class Employee extends Component {
   state = {
@@ -16,7 +26,7 @@ class Employee extends Component {
     employee_email: "",
     employee_mobile: "",
     employee_hire_date: "",
-    attendence_working_hours: "",
+    attendence_working_hours: 8,
     attendence_day: "",
     attendence_status: ""
   };
@@ -65,16 +75,25 @@ class Employee extends Component {
   };
 
   onAddAttendenceRecord = () => {
-    console.log(
-      this.state.attendence_day,
-      this.state.attendence_status,
-      this.state.attendence_working_hours
-    );
+    let attendence_day = this.state.attendence_day;
+    if (!attendence_day) {
+      attendence_day = moment().format("L");
+    }
+
+    let attendence_working_hours = this.state.attendence_working_hours;
+    if (!attendence_working_hours) {
+      attendence_working_hours = 8;
+    }
+
+    let attendence_status = this.state.attendence_status;
+    if (!attendence_status) {
+      attendence_status = "Present";
+    }
 
     this.props.addEmployeeAttendence(this.props.employee._id, {
-      workingHours: this.state.attendence_working_hours,
-      status: this.state.attendence_status,
-      day: this.state.attendence_day
+      workingHours: attendence_working_hours,
+      status: attendence_status,
+      day: attendence_day
     });
 
     this.props.getEmployee(this.props.match.params.id);
@@ -92,19 +111,32 @@ class Employee extends Component {
   };
 
   onDateInputChange = e => {
-    this.setState(() => ({
+    this.setState({
       employee_hire_date: e.format("L")
-    }));
+    });
   };
 
   onAttendenceDateInputChange = e => {
-    this.setState(() => ({
+    this.setState({
       attendence_day: e.format("L")
-    }));
+    });
+  };
+
+  handleAttendenceStatusChange = e => {
+    this.setState({
+      attendence_status: e
+    });
+  };
+
+  handleAttendenceWorkingHoursChange = e => {
+    if (!isNaN(e))
+      this.setState({
+        attendence_working_hours: e
+      });
   };
 
   render() {
-    if (this.props.loading) {
+    if (this.props.loading || !this.props.employee) {
       return (
         <div className="spin">
           <Spin size="large" />
@@ -114,116 +146,154 @@ class Employee extends Component {
 
     return (
       <div style={{ paddingTop: "50px" }}>
-        {this.props.employee ? (
-          <div>
-            <h1>{this.props.employee.name}</h1>
-            <h2>Employer email: {this.props.employee.email}</h2>
-            <h2>Employer mobile: {this.props.employee.mobile}</h2>
-            <h2>
-              Employer hire date:{" "}
-              {moment(this.props.employee.hireDate).format("L")}
-            </h2>
+        <div>
+          <h1>{this.props.employee.name}</h1>
+          <h2>Employer email: {this.props.employee.email}</h2>
+          <h2>Employer mobile: {this.props.employee.mobile}</h2>
+          <h2>
+            Employer hire date:{" "}
+            {moment(this.props.employee.hireDate).format("L")}
+          </h2>
 
+          <div style={{ display: "flex", justifyContent: "space-around" }}>
+            {/* DELETE EMPLOYEE */}
+            <Button onClick={this.deleteEmployee} type="primary">
+              Delete Employee
+            </Button>
+
+            {/* EDIT EMPLOYEE */}
+            <Button type="primary" onClick={this.showModal}>
+              Edit Employee
+            </Button>
+          </div>
+
+          <Modal
+            title="Edit Employee"
+            visible={this.state.showModal}
+            closable={false}
+            footer={[
+              <Button key="back" onClick={this.handleCancel}>
+                Cancel
+              </Button>,
+              <Button key="submit" type="primary" onClick={this.handleOk}>
+                Edit
+              </Button>
+            ]}
+          >
+            <label>Name</label>{" "}
+            <input
+              type="text"
+              name="employee_name"
+              value={this.state.employee_name}
+              onChange={this.onInputChange}
+            />
+            <br />
+            <br />
+            <label>Email</label>{" "}
+            <input
+              type="text"
+              name="employee_email"
+              value={this.state.employee_email}
+              onChange={this.onInputChange}
+            />
+            <br />
+            <br />
+            <label>Mobile</label>{" "}
+            <input
+              type="text"
+              name="employee_mobile"
+              value={this.state.employee_mobile}
+              onChange={this.onInputChange}
+            />
+            <br />
+            <br />
+            <label>Hire Date</label>{" "}
+            <DatePicker
+              defaultValue={moment(this.state.employee_hire_date)}
+              onChange={this.onDateInputChange}
+              allowClear={false}
+            />
+            <br />
+          </Modal>
+
+          {/* ADD EMPLOYEE ATTENDENCE */}
+
+          <Card
+            style={{ margin: "20px 20px" }}
+            title="Add a new Attendence Record for this Employee"
+          >
             <div style={{ display: "flex", justifyContent: "space-around" }}>
-              {/* DELETE EMPLOYEE */}
-              <Button onClick={this.deleteEmployee} type="primary">
-                Delete Employee
-              </Button>
+              <div>
+                <label>Day</label>{" "}
+                <DatePicker
+                  defaultValue={moment()}
+                  onChange={this.onAttendenceDateInputChange}
+                  allowClear={false}
+                />
+              </div>
 
-              {/* EDIT EMPLOYEE */}
-              <Button type="primary" onClick={this.showModal}>
-                Edit Employee
-              </Button>
-            </div>
+              <div>
+                <label>Working hours</label>{" "}
+                <InputNumber
+                  min={0}
+                  max={15}
+                  defaultValue={8}
+                  onChange={this.handleAttendenceWorkingHoursChange}
+                  formatter={value => this.state.attendence_working_hours}
+                />
+              </div>
 
-            <Modal
-              title="Basic Modal"
-              visible={this.state.showModal}
-              closable={false}
-              footer={[
-                <Button key="back" onClick={this.handleCancel}>
-                  Cancel
-                </Button>,
-                <Button key="submit" type="primary" onClick={this.handleOk}>
-                  Edit
-                </Button>
-              ]}
-            >
-              <label>Name</label>{" "}
-              <input
-                type="text"
-                name="employee_name"
-                value={this.state.employee_name}
-                onChange={this.onInputChange}
-              />
-              <br />
-              <br />
-              <label>Email</label>{" "}
-              <input
-                type="text"
-                name="employee_email"
-                value={this.state.employee_email}
-                onChange={this.onInputChange}
-              />
-              <br />
-              <br />
-              <label>Mobile</label>{" "}
-              <input
-                type="text"
-                name="employee_mobile"
-                value={this.state.employee_mobile}
-                onChange={this.onInputChange}
-              />
-              <br />
-              <br />
-              <label>Hire Date</label>{" "}
-              <DatePicker
-                defaultValue={moment(this.state.employee_hire_date)}
-                onChange={this.onDateInputChange}
-                allowClear={false}
-              />
-              <br />
-            </Modal>
-
-            {/* ADD EMPLOYEE ATTENDENCE */}
-
-            <Card style={{ margin: "20px 20px" }}>
-              <label>Day</label>
-              <DatePicker
-                defaultValue={moment()}
-                onChange={this.onAttendenceDateInputChange}
-                allowClear={false}
-              />
-
-              <label>Working hours</label>
-              <input
-                type="number"
-                name="attendence_working_hours"
-                value={this.state.attendence_working_hours}
-                onChange={this.onInputChange}
-              />
-
-              <label>Status</label>
-              <input
-                type="text"
-                name="attendence_status"
-                value={this.state.attendence_status}
-                onChange={this.onInputChange}
-              />
-
+              <div>
+                <label>Status</label>{" "}
+                <Select
+                  defaultValue="Present"
+                  style={{ width: 120 }}
+                  onChange={this.handleAttendenceStatusChange}
+                >
+                  <Option value="Present">Present</Option>
+                  <Option value="Absent">Absent</Option>
+                  <Option value="Sick Leave">Sick Leave</Option>
+                  <Option value="Day Off">Day Off</Option>
+                </Select>
+              </div>
               <Button type="primary" onClick={this.onAddAttendenceRecord}>
                 Add Attendence Record
               </Button>
-            </Card>
+            </div>
+          </Card>
 
-            <h2>Attendence Record:</h2>
-            {this.props.employee.attendenceRecord.length <= 0
-              ? "No Records yet for this employee"
-              : "has ass"}
-          </div>
-        ) : (
-          ""
-        )}
+          <h2>Attendence Records:</h2>
+          {this.props.employee.attendenceRecord.length <= 0
+            ? "No Records yet for this employee"
+            : this.props.employee.attendenceRecord.map((att, i) => {
+                if (i === 0)
+                  return (
+                    <div key={att._id}>
+                      <div className="employee-attendence-record-container-main">
+                        <div>Day</div>
+                        <div>Working Hours</div>
+                        <div>Status</div>
+                      </div>
+                      <div className="employee-attendence-record-container">
+                        <div>{moment(att.day).format("L")}</div>
+                        <div>{att.workingHours}</div>
+                        <div>{att.status}</div>
+                      </div>
+                    </div>
+                  );
+                else
+                  return (
+                    <div
+                      key={att._id}
+                      className="employee-attendence-record-container"
+                    >
+                      <div>{moment(att.day).format("L")}</div>
+                      <div>{att.workingHours}</div>
+                      <div>{att.status}</div>
+                    </div>
+                  );
+              })}
+        </div>
       </div>
     );
   }

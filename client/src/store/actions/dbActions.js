@@ -44,6 +44,7 @@ export const addEmployeeAttendence = (id, attendence) => dispatch => {
       type: actionTypes.ADD_EMPLOYEE_ATTENDENCE,
       employee: res.data
     });
+    dispatch(getEmployee(id));
   });
 };
 

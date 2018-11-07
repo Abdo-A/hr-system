@@ -1,0 +1,28 @@
+.employee-attendence-record-container {
+  display: flex;
+  justify-content: space-around;
+  border: 2px solid rgb(14, 255, 66);
+  margin: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: aqua;
+}
+
+.employee-attendence-record-container-main {
+  display: flex;
+  justify-content: space-around;
+  border: 2px solid rgb(14, 255, 66);
+  color: "white";
+  margin: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: rgb(152, 209, 209);
+}
+
+table,
+th,
+td {
+  border: 1px solid black;
+  border-collapse: collapse;
+  text-align: center;
+}

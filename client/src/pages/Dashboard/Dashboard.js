@@ -86,7 +86,7 @@ class Dashboard extends Component {
           Add Employee
         </Button>
         <Modal
-          title="Basic Modal"
+          title="Add Employee"
           visible={this.state.showModal}
           closable={false}
           footer={[
