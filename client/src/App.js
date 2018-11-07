@@ -1,5 +1,7 @@
-import { Route, Switch, withRouter, Redirect } from "react-router-dom";
+import { connect } from "react-redux";
+import { Route, Switch, Redirect } from "react-router-dom";
 import React, { Component } from "react";
+import { BrowserRouter } from "react-router-dom";
 
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Employee from "./pages/Employee/Employee";
@@ -9,17 +11,32 @@ import "./App.css";
 
 class App extends Component {
   render() {
+    const { isAuthenticated } = this.props;
     return (
       <div className="App">
-        <Switch>
-          <Route path="/" exact component={Login} />
-          <Route path="/dashboard" component={Dashboard} />
-          <Route path="/employee/:id" component={Employee} />
-          <Redirect to="/" />
-        </Switch>
+        <BrowserRouter>
+          <Switch>
+            <Route path="/" exact component={Login} />
+            {isAuthenticated ? (
+              <Switch>
+                <Route path="/dashboard" component={Dashboard} />
+                <Route path="/employee/:id" component={Employee} />
+              </Switch>
+            ) : (
+              <Redirect to="/" />
+            )}
+            <Redirect to="/" />
+          </Switch>
+        </BrowserRouter>
       </div>
     );
   }
 }
 
-export default App;
+const mapStateToProps = state => {
+  return {
+    isAuthenticated: state.auth.isAuthenticated
+  };
+};
+
+export default connect(mapStateToProps)(App);
