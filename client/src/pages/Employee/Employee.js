@@ -94,7 +94,9 @@ class Employee extends Component {
       showModal: false
     });
 
-    this.props.getEmployee(this.props.match.params.id);
+    setTimeout(() => {
+      this.props.getEmployee(this.props.match.params.id);
+    }, 200);
   };
 
   handleCancel = e => {
@@ -379,7 +381,6 @@ export default connect(
     addEmployeeAttendence: dbActions.addEmployeeAttendence,
     deleteEmployee: dbActions.deleteEmployee,
     editEmployee: dbActions.editEmployee,
-    getEmployees: dbActions.getEmployees,
     unauthenticate: dbActions.unauthenticate
   }
 )(Employee);
