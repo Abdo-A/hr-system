@@ -52,6 +52,7 @@ class Employee extends Component {
   };
 
   handleOk = e => {
+    console.log("this.props.employees", this.props.employees);
     let employer_hire_date = this.state.employee_hire_date;
     if (!employer_hire_date) {
       employer_hire_date = moment().format("L");
@@ -68,14 +69,15 @@ class Employee extends Component {
       return;
     }
 
-    for (let employee of this.props.employees) {
-      if (this.state.employee_email === employee.email) {
-        this.setState(() => ({
-          modalSubmitError: "There is an employee with the same email"
-        }));
-        return;
+    if (this.props.employees)
+      for (let employee of this.props.employees) {
+        if (this.state.employee_email === employee.email) {
+          this.setState(() => ({
+            modalSubmitError: "There is an employee with the same email"
+          }));
+          return;
+        }
       }
-    }
 
     this.setState(() => ({
       modalSubmitError: ""
@@ -377,6 +379,7 @@ export default connect(
     addEmployeeAttendence: dbActions.addEmployeeAttendence,
     deleteEmployee: dbActions.deleteEmployee,
     editEmployee: dbActions.editEmployee,
+    getEmployees: dbActions.getEmployees,
     unauthenticate: dbActions.unauthenticate
   }
 )(Employee);
