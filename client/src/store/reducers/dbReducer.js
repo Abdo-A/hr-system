@@ -9,7 +9,6 @@ const INITIAL_STATE = {
 };
 
 const dbReducer = (state = INITIAL_STATE, action) => {
-  console.log("employees from reducer", state.employees);
   switch (action.type) {
     case actionTypes.GET_EMPLOYEES:
       return {
